@@ -41,3 +41,10 @@ python main.py 4
 python main.py 5
 ```
 Эта команда выполняет запрос к базе данных и измеряет время его выполнения.
+
+# Оценка производительности по времени операций поиска:
+query without indexes:
+time: 0.27622151374816895 seconds
+
+query with indexes:
+time: 0.11643362045288086 seconds
