@@ -1,7 +1,7 @@
 import sys
 from database import create_db_engine, create_db_session
-from sqlalchemy import Column, String, Date, Enum, Integer
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, String, Date, Enum, Integer, Index
+from sqlalchemy.orm import declarative_base
 from datetime import datetime
 import random
 import time
@@ -14,7 +14,10 @@ class Employee(Base):
     id = Column(Integer, primary_key=True)
     full_name = Column(String)
     birth_date = Column(Date)
-    gender = Column(Enum("Male", "Female"))
+    gender = Column(Enum("Male", "Female", name='gender'))
+    
+Index('idx_gender', Employee.gender)
+Index('idx_full_name', Employee.full_name)
 
 
 def create_table(session):
@@ -53,8 +56,9 @@ def calculate_age(birth_date):
 
 
 def generate_random_data():
-    names = ["John", "Jane", "James", "Jennifer", "Jack", "Jessica"]
-    last_names = ["Smith", "Johnson", "Williams", "Jones", "Brown", "Davis"]
+    names = ["Ivan", "Anna", "Dmitry", "Ekaterina", "Alexei", "Yulia"]
+    last_names = ["Ivanov", "Fedorov", "Sidorov", "Kuznetsova", "Popov", "Smirnova"]
+
     genders = ["Male", "Female"]
     data = []
 
@@ -100,10 +104,12 @@ def query_and_measure_time(session):
     print(f"Execution time: {end_time - start_time} seconds")
 
 
+
+
 if __name__ == "__main__":
     mode = int(sys.argv[1])
 
-    engine = create_db_engine("your_username", "your_password", "your_database")
+    engine = create_db_engine("postgres", "postgres", "ptmk")
     session = create_db_session(engine)
 
     if mode == 1:
