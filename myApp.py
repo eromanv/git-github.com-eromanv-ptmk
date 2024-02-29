@@ -16,9 +16,6 @@ class Employee(Base):
     birth_date = Column(Date)
     gender = Column(Enum("Male", "Female", name='gender'))
     
-Index('idx_gender', Employee.gender)
-Index('idx_full_name', Employee.full_name)
-
 
 def create_table(session):
     Base.metadata.create_all(session.get_bind())
@@ -56,8 +53,8 @@ def calculate_age(birth_date):
 
 
 def generate_random_data():
-    names = ["Ivan", "Anna", "Dmitry", "Ekaterina", "Alexei", "Yulia"]
-    last_names = ["Ivanov", "Fedorov", "Sidorov", "Kuznetsova", "Popov", "Smirnova"]
+    names = ["Ivan", "Dmitry", "Alexei"]
+    last_names = ["Ivanov", "Fedorov", "Sidorov", "Popov"]
 
     genders = ["Male", "Female"]
     data = []
@@ -72,6 +69,13 @@ def generate_random_data():
         )
         birth_date = f"{random.randint(1950, 2000)}-{random.randint(1, 12)}-{random.randint(1, 28)}"
         gender = random.choice(genders)
+        data.append((full_name, birth_date, gender))
+
+
+    for _ in range(100):
+        full_name = 'F' + random.choice(names) + ' ' + random.choice(last_names) + ' ' + random.choice(last_names)
+        birth_date = f"{random.randint(1950, 2000)}-{random.randint(1, 12)}-{random.randint(1, 28)}"
+        gender = "Male"
         data.append((full_name, birth_date, gender))
 
     return data
@@ -129,4 +133,18 @@ if __name__ == "__main__":
         batch_insert(session, data)
 
     elif mode == 5:
+        print("Executing query without indexes:")
         query_and_measure_time(session)
+
+        # Добавляем индексы
+        Index('idx_gender', Employee.gender)
+        Index('idx_full_name', Employee.full_name)
+
+        # Выполняем запрос с индексами
+        print("\nExecuting query with indexes:")
+        query_and_measure_time(session)
+
+
+
+
+
