@@ -14,8 +14,8 @@ class Employee(Base):
     id = Column(Integer, primary_key=True)
     full_name = Column(String)
     birth_date = Column(Date)
-    gender = Column(Enum("Male", "Female", name='gender'))
-    
+    gender = Column(Enum("Male", "Female", name="gender"))
+
 
 def create_table(session):
     Base.metadata.create_all(session.get_bind())
@@ -71,9 +71,15 @@ def generate_random_data():
         gender = random.choice(genders)
         data.append((full_name, birth_date, gender))
 
-
     for _ in range(100):
-        full_name = 'F' + random.choice(names) + ' ' + random.choice(last_names) + ' ' + random.choice(last_names)
+        full_name = (
+            "F"
+            + random.choice(names)
+            + " "
+            + random.choice(last_names)
+            + " "
+            + random.choice(last_names)
+        )
         birth_date = f"{random.randint(1950, 2000)}-{random.randint(1, 12)}-{random.randint(1, 28)}"
         gender = "Male"
         data.append((full_name, birth_date, gender))
@@ -108,8 +114,6 @@ def query_and_measure_time(session):
     print(f"Execution time: {end_time - start_time} seconds")
 
 
-
-
 if __name__ == "__main__":
     mode = int(sys.argv[1])
 
@@ -137,14 +141,9 @@ if __name__ == "__main__":
         query_and_measure_time(session)
 
         # Добавляем индексы
-        Index('idx_gender', Employee.gender)
-        Index('idx_full_name', Employee.full_name)
+        Index("idx_gender", Employee.gender)
+        Index("idx_full_name", Employee.full_name)
 
         # Выполняем запрос с индексами
         print("\nExecuting query with indexes:")
         query_and_measure_time(session)
-
-
-
-
-
